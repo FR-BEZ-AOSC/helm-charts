@@ -1,2 +1,4 @@
-# charts
-Helm charts repositories
+# Helm Znuny
+
+This repository contains the Helm charts used to deploy docker-znuny.
+
