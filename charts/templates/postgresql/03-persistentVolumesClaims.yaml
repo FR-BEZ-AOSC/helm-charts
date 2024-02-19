@@ -1,0 +1,27 @@
+{{- $rel := .Release -}}
+{{- $val := .Values -}}
+{{- if .Values.postgresql.enabled }}
+{{- range $pvc := .Values.postgresql.persistentVolumeClaims }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $rel.Name }}-postgresql-{{ $pvc.name }}
+  namespace: {{ $rel.Namespace }}
+  labels:
+    app: postgresql
+    service: {{ $rel.Name }}
+{{- range $k, $v := $val.postgresql.labels }}
+    {{ $k }}: {{ $v }}
+{{- end }}
+spec:
+  accessModes:
+{{- range $pvc.accessModes }}
+    - {{ . }}
+{{- end }}
+  resources:
+    requests:
+      storage: {{ $pvc.size }}
+status: {}
+{{- end }}
+{{- end }}

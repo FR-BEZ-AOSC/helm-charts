@@ -1,0 +1,50 @@
+{{- $rel := .Release -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $rel.Name }}-znuny-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: znuny
+    service: {{ .Release.Name }}
+data:
+  {{- if .Values.znuny.config.logs.path }}
+  ZNUNY_LOGS_PATH: {{ .Values.znuny.config.logs.path }}
+  {{- end }}
+  ZNUNY_DATABASE_TYPE: {{ .Values.znuny.config.database.type }}
+  ZNUNY_DATABASE_HOST: {{ .Values.znuny.config.database.host | default (printf "%s-postgresql.%s.svc.cluster.local" $rel.Name $rel.Namespace) }}
+  ZNUNY_DATABASE_PORT: {{ .Values.znuny.config.database.port | quote }}
+  ZNUNY_DATABASE_NAME: {{ .Values.znuny.config.database.name }}
+  ZNUNY_DATABASE_USER: {{ .Values.znuny.config.database.user }}
+  ZNUNY_APACHE_DOMAIN: {{ .Values.znuny.config.apache.domain | default "znuny.domain.tld" }}
+{{- if .Values.znuny.config.apache.rewriteRules }}
+  ZNUNY_APACHE_REWRITE_RULES: |-
+{{- .Values.znuny.config.apache.rewriteRules | nindent 4 }}
+{{- end }}
+  ZNUNY_USER_ADMIN_NAME: {{ .Values.znuny.config.users.admin.name }}
+{{- if eq .Values.znuny.config.mails.type "external" }}
+  ZNUNY_MAILING_TYPE: {{ .Values.znuny.config.mails.type }}
+  ZNUNY_MAILING_HOST: {{ .Values.znuny.config.mails.host }}
+  ZNUNY_MAILING_PORT: {{ .Values.znuny.config.mails.port | quote }}
+  ZNUNY_MAILING_USER: {{ .Values.znuny.config.mails.user }}
+{{- else if eq .Values.znuny.config.mails.type "internal" }}
+  ZNUNY_MAILING_TYPE: {{ .Values.znuny.config.mails.type }}
+{{- end }}
+  {{- range $index, $value := .Values.znuny.config.authentications.customers.backends }}
+  ZNUNY_CUSTOMER_BACKEND_{{ add $index 1 }}: |-
+    {{- $value | nindent 4 }}
+  {{- end }}
+  {{- range $index, $value := .Values.znuny.config.authentications.customers.synchronizations }}
+  ZNUNY_CUSTOMER_SYNCHRO_{{ add $index 1 }}: |-
+    {{- $value | nindent 4 }}
+  {{- end }}
+  {{- range $index, $value := .Values.znuny.config.authentications.agents.backends }}
+  ZNUNY_AGENTS_BACKEND_{{ add $index 1 }}: |-
+    {{- $value | nindent 4 }}
+  {{- end }}
+  {{- range $index, $value := .Values.znuny.config.authentications.agents.synchronizations }}
+  ZNUNY_AGENTS_SYNCHRO_{{ add $index 1 }}: |-
+    {{- $value | nindent 4 }}
+  {{- end }}
+

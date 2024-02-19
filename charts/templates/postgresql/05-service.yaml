@@ -1,0 +1,23 @@
+{{- $rel := .Release -}}
+{{- if .Values.postgresql.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-postgresql
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: postgresql
+    service: {{ .Release.Name }}
+{{- range $k, $v := .Values.postgresql.labels }}
+    {{ $k }}: {{ $v }}
+{{- end }}
+spec:
+  type: {{ .Values.postgresql.service.type }}
+  ports:
+    - name: "postgresql"
+      port: {{ .Values.postgresql.service.port }}
+      targetPort: 5432
+  selector:
+    instance: {{ $rel.Name }}-postresql
+{{- end }}

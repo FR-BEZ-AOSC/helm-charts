@@ -1,0 +1,91 @@
+{{- $rel := .Release -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $rel.Name }}-znuny
+  namespace: {{ $rel.Namespace }}
+  labels:
+    app: znuny
+    service: {{ $rel.Name }}
+    {{- if .Values.znuny.podAnnotations }}
+    annotations:
+      {{- range .Values.znuny.podAnnotations }}
+      - {{ . | quote }}
+      {{- end }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.znuny.replicaCount }}
+  selector:
+    matchLabels:
+      instance: {{ $rel.Name }}-znuny
+  strategy:
+    type: {{ .Values.znuny.deploymentStrategy }}
+  template:
+    metadata:
+      labels:
+        app: znuny
+        service: {{ $rel.Name }}
+        instance: {{ $rel.Name }}-znuny
+    spec:
+      containers:
+        - name: {{ $rel.Name }}
+          image: {{ .Values.znuny.image.repository }}:{{ .Values.znuny.image.tag }}
+          imagePullPolicy: {{ .Values.postgresql.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.znuny.service.port }}
+          {{- if .Values.znuny.resources }}
+          resources:
+            limits:
+              cpu: {{ .Values.znuny.resources.limits.cpu }}
+              memory: {{ .Values.znuny.resources.limits.memory }}
+            requests:
+              cpu: {{ .Values.znuny.resources.requests.cpu }}
+              memory: {{ .Values.znuny.resources.requests.memory }}
+          {{- else }}
+          resources: {}
+          {{- end }}
+          {{- if .Values.znuny.persistenVolumeClaims }}
+          volumeMounts:
+            {{- range $pvc := .Values.znuny.persistentVolumeClaims }}
+            - mountPath: {{ $pvc.mount }}
+              name: {{ $rel.Name }}-{{ $pvc.name }}
+            {{- end }}
+          {{- end }}
+          envFrom:
+          - configMapRef:
+              name: {{ $rel.Name }}-znuny-config
+          - secretRef:
+              name: {{ $rel.Name }}-znuny-secrets
+          # env:
+          # - name: ZNUNY_MAILING_PASSWORD
+          #   valueFrom:
+          #     secretKeyRef:
+          #       name: {{ $rel.Name }}-znuny-secrets
+          #       key: znuny_mails_password
+          # - name: ZNUNY_DATABASE_PASSWORD
+          #   valueFrom:
+          #     secretKeyRef:
+          #       name: {{ $rel.Name }}-znuny-secrets
+          #       key: znuny_database_password
+          # - name: ZNUNY_USER_ADMIN_PASSWORD
+          #   valueFrom:
+          #     secretKeyRef:
+          #       name: {{ $rel.Name }}-znuny-secrets
+          #       key: znuny_user_admin_password
+      hostname: {{ $rel.Name }}
+      restartPolicy: {{ .Values.znuny.restartPolicy }}
+      {{- if .Values.znuny.image.pullSecrets }}
+      imagePullSecrets:
+        {{- range $ps := .Values.znuny.image.pullSecrets }}
+        - name: {{ $rel.Name }}-{{ $ps.name }}-registry-secret
+        {{- end }}
+      {{- end }}
+      {{- if .Values.znuny.persistentVolumeClaims }}
+      volumes:
+        {{- range $pvc := .Values.znuny.persistentVolumeClaims }}
+        - name: {{ $rel.Name }}-{{ $pvc.name }}
+          persistentVolumeClaim:
+            claimName: {{ $rel.Name }}-{{ $pvc.name }}
+        {{- end }}
+      {{- end }}

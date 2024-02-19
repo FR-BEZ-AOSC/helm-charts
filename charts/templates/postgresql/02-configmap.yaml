@@ -1,0 +1,24 @@
+{{- if .Values.postgresql.enabled }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-postgresql-env
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: postgresql
+    service: {{ .Release.Name }}
+data:
+  PGDATA: {{ .Values.postgresql.config.data.path }}
+  POSTGRES_DB: {{ .Values.postgresql.config.database }}
+  POSTGRES_PASSWORD: {{ .Values.postgresql.config.password }}
+  POSTGRES_USER: {{ .Values.postgresql.config.user }}
+{{- end }}
+
+
+
+
+
+
+
+

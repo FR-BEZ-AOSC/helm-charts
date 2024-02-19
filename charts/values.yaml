@@ -1,0 +1,236 @@
+# Default values for znuny-helm-charts.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: {}
+# nameOverride: ""
+
+namespaceOverride: {}
+# namespaceOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: "znuny"
+
+znuny:
+  restartPolicy: Always
+  deploymentStrategy: Recreate
+  replicaCount: 1
+
+  image:
+    repository: ghcr.io/fr-bez-aosc/docker-znuny
+    tag: v6.5.4-1
+    pullPolicy: IfNotPresent
+    pullSecrets: []
+      # - name: gh
+      #   secret: 
+
+  config:
+    logs:
+      path: /var/log/znuny
+    
+    database:
+      type: pgsql
+      # host: 
+      port: 5432
+      name: znuny
+      user: znuny
+      password: password
+
+    apache:
+      domain: znuny.domain.tld
+      # rewriteRules: |-
+      #   RewriteRule ^/$ https://%{HTTP_HOST}/otrs/customer.pl
+      #   RewriteRule ^/otrs/$ https://%{HTTP_HOST}/otrs/customer.pl
+      #   RewriteRule ^/otrs$ https://%{HTTP_HOST}/otrs/customer.pl
+
+    users:
+      admin:
+        name: root@localhost
+        password: password
+
+    mails:
+      type: internal
+      host: smtp.domain.tld
+      port: 25
+      user: znuny@domain.tld
+      password: password
+
+    authentications:
+      customers:
+        backends: {}
+        # backends:
+        #   - |-
+        #     $$Self->{AuthModule} = 'Kernel::System::Auth::LDAP';
+        #     $$Self->{'AuthModule::LDAP::Host'} = 'ldap.example.com';
+        #     $$Self->{'AuthModule::LDAP::BaseDN'} = 'dc=example,dc=com';
+        #     $$Self->{'AuthModule::LDAP::UID'} = 'uid';
+        #     $$Self->{'AuthModule::LDAP::GroupDN'} = 'cn=znuny-allow,ou=posixGroups,dc=example,dc=com';
+        #     $$Self->{'AuthModule::LDAP::AccessAttr'} = 'memberUid';
+        #     $$Self->{'AuthModule::LDAP::UserAttr'} = 'UID';
+        #     $$Self->{'AuthModule::LDAP::UserAttr'} = 'DN';
+        synchronizations: {}
+        # synchronizations:
+        # - |-
+        #   $$Self->{'AuthSyncModule'} = 'Kernel::System::Auth::Sync::LDAP';
+        #   $$Self->{'AuthSyncModule::LDAP::Host'} = 'ldap.example.com';
+        #   $$Self->{'AuthSyncModule::LDAP::BaseDN'} = 'dc=example,dc=com';
+        #   $$Self->{'AuthSyncModule::LDAP::UID'} = 'uid';
+        #   $$Self->{'AuthSyncModule::LDAP::SearchUserDN'} = '';
+        #   $$Self->{'AuthSyncModule::LDAP::SearchUserPw'} = '';
+        #   $$Self->{'AuthSyncModule::LDAP::AlwaysFilter'} = '';
+        #   $$Self->{'AuthSyncModule::LDAP::UserSyncMap'} = {
+        #       UserFirstname => 'givenName',
+        #       UserLastname  => 'sn',
+        #       UserEmail     => 'mail',
+        #   };
+      agents:
+        backends: {}
+        # backends:
+        # - |-
+        synchronizations: {}
+        # synchronizations:
+        # - |-
+
+  autoscaling: {}
+  # autoscaling:
+  #   minReplicas: 1
+  #   maxReplicas: 3
+  #   targetCPUUtilizationPercentage: 20
+  #   targetMemoryUtilizationPercentage: 50
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  ingress:
+    enabled: false
+    domain: znuny.domain.tld
+    annotations: []
+    # annotations:
+    #   - "kubernetes.io/ingress.class: nginx"
+    tls:
+      enabled: false
+      annotations: []
+      # annotations:
+      #   - "cert-manager.io/cluster-issuer: letsencrypt-prod"
+
+  persistentVolumeClaims: {}
+  # persistentVolumeClaims:
+  #   - name: "data"
+  #     size: "100Mi"
+  #     mount: "/datas"
+  #     accessModes:
+  #       - ReadWriteOnce
+
+  podAnnotations: {}
+  # podAnnotations:
+  #   - ""
+
+  resources: {}
+  # resources:
+  #   limits:
+  #     cpu: 100m
+  #     memory: 128Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
+
+  jobs:
+    upgrade:
+      enabled: false
+
+postgresql:
+  enabled: true
+
+  labels: {}
+  # labels:
+  #   service: postgresql
+
+  podAnnotations: {}
+  # podAnnotations:
+  #   - ""
+
+
+  image:
+    repository: postgres
+    tag: 13
+    pullPolicy: IfNotPresent
+    pullSecrets: []
+    # pullSecrets:
+    #   - name: gh
+    #     secret: 
+
+
+  config:
+    database: znuny
+    user: znuny
+    password: password
+
+    data:
+      path: /var/lib/postgresql/data/pgdata
+
+  replicas: 1
+  restartPolicy: Always
+  deploymentStrategy: Recreate
+
+  imagePullSecrets: []
+  # imagePullSecrets:
+  #   - github-registry-secret
+
+  persistentVolumeClaims:
+    - name: "data"
+      size: "10Gi"
+      accessModes: 
+        - ReadWriteOnce
+      mount: "/var/lib/postgresql/data"
+
+  # resources: {}
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  service:
+    type: ClusterIP
+    port: 5432
+
+
+mariadb:
+  enabled: false
+  port: 3306
+  database: znuny
+  user: znuny
+  password: password
+  root_password: password
+
+##TODO
+podSecurityContext: {}
+
+##TODO
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+##TODO
+nodeSelector: {}
+
+##TODO
+tolerations: []
+
+##TODO
+affinity: {}
+
