@@ -3,13 +3,12 @@ entries:
   helm-znuny:
   - apiVersion: v2
     appVersion: 6.5.4
-    created: "2024-02-19T18:04:23.14085539+01:00"
+    created: "2024-02-21T17:54:50.939638006Z"
     description: A Helm chart to deploy Znuny on Kubernetes
-    digest: e5cc55887ee291a9c8d14cd245b86a1e6e4770faa58df09879cf2002a99ce748
+    digest: 0a3c4ffe589ad0da654fb6478594f198877dd34b6bca5a44b1ff6e1b8323990b
     icon: https://avatars.githubusercontent.com/u/1922266?s=200&v=4
     name: helm-znuny
     type: application
     urls:
-    - https://helm-znuny.aosc-portal.com/helm-znuny-0.2.1.tgz
-    version: 0.2.1
-generated: "2024-02-19T18:04:23.137793458+01:00"
+    - https://github.com/FR-BEZ-AOSC/helm-znuny/releases/download/helm-znuny-0.2.2/helm-znuny-0.2.2.tgz
+    version: 0.2.2
