@@ -1,5 +1,5 @@
 apiVersion: v2
-name: helm-znuny
+name: znuny
 description: A Helm chart to deploy Znuny on Kubernetes
 icon: https://avatars.githubusercontent.com/u/1922266?s=200&v=4
 
