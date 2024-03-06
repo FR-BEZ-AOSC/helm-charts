@@ -1,0 +1,75 @@
+{{- $rel := .Release -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: znuny
+  namespace: {{ $rel.Namespace }}
+  labels:
+    app: znuny
+    service: {{ $rel.Name }}-{{ $rel.Namespace }}
+    {{- if .Values.podAnnotations }}
+    annotations:
+      {{- range .Values.podAnnotations }}
+      - {{ . | quote }}
+      {{- end }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      instance: {{ $rel.Namespace }}-znuny
+  strategy:
+    type: {{ .Values.deploymentStrategy }}
+  template:
+    metadata:
+      labels:
+        app: znuny
+        service: {{ $rel.Name }}-{{ $rel.Namespace }}
+        instance: {{ $rel.Namespace }}-znuny
+    spec:
+      containers:
+        - name: znuny
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.postgresql.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          {{- if .Values.resources }}
+          resources:
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+          {{- else }}
+          resources: {}
+          {{- end }}
+          {{- if .Values.persistenVolumeClaims }}
+          volumeMounts:
+            {{- range $pvc := .Values.persistentVolumeClaims }}
+            - mountPath: {{ $pvc.mount }}
+              name: {{ $rel.Name }}-{{ $pvc.name }}
+            {{- end }}
+          {{- end }}
+          envFrom:
+          - configMapRef:
+              name: {{ $rel.Name }}-znuny-config
+          - secretRef:
+              name: {{ $rel.Name }}-znuny-secrets
+      hostname: {{ $rel.Name }}
+      restartPolicy: {{ .Values.restartPolicy }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- range $ps := .Values.image.pullSecrets }}
+        - name: {{ $rel.Name }}-{{ $ps.name }}-registry-secret
+        {{- end }}
+      {{- end }}
+      {{- if .Values.persistentVolumeClaims }}
+      volumes:
+        {{- range $pvc := .Values.persistentVolumeClaims }}
+        - name: {{ $rel.Name }}-{{ $pvc.name }}
+          persistentVolumeClaim:
+            claimName: {{ $rel.Name }}-{{ $pvc.name }}
+        {{- end }}
+      {{- end }}

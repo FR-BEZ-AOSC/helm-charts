@@ -1,0 +1,50 @@
+
+** Please be patient while the chart is being deployed **
+
+The default administrator user is "{{ .Values.config.users.admin.name }}".
+To get the administrator credentials run:
+
+    echo $(kubectl get secret --namespace {{ .Release.Namespace }} znuny-secrets -o jsonpath="{.data.ZNUNY_USER_ADMIN_PASSWORD}" | base64 -d)
+
+Znuny can be accessed via port 80 on the following DNS names from within your cluster:
+
+    znuny.{{ .Release.Namespace }}.svc.cluster.local - HTTP connection
+
+{{- if .Values.ingress.enabled }}
+
+Znuny is exposed via an ingress on the domain "{{ .Values.ingress.domain }}".
+It can be accessed from a web browser at :
+    {{- if .Values.ingress.tls.enabled }}
+
+    https://{{ .Values.ingress.domain }} - HTTPS connection
+    {{- else }}
+
+    http://{{ .Values.ingress.domain }} - HTTP connection
+    {{- end }}
+{{- end }}
+
+If needed, Znuny's web UI can be reached by port forwarding :
+
+    kubectl --namespace {{ .Release.Namespace }} port-forward svc/znuny 8080:80
+
+To connect to the container shell :
+
+    kubectl --namespace {{ .Release.Namespace }} exec -ti <pod> -- /bin/bash
+
+    > NOTE: In this way, any actions performed will be executed as root.
+
+To connect to the container shell with the application user :
+
+    kubectl --namespace {{ .Release.Namespace }} exec -ti <pod> -- su otrs -s /bin/bash
+
+    > NOTE: You can now run Znuny's CLI command with the application console : "./bin/otrs.Console.pl List".
+
+To run a Znuny's CLI command without persistent shell connection :
+
+    kubectl --namespace {{ .Release.Namespace }} exec -ti <pod> -- su -c "/opt/otrs/bin/otrs.Console.pl List" -s /bin/sh otrs
+
+    > NOTE: Take care to not run deamonized process.
+
+Znuny deployment successfully completed !
+
+
