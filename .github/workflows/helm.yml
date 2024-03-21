@@ -19,10 +19,10 @@ jobs:
 
      
       - name: Install dependencies
-        run: helm dependency update charts/znuny
+        run: helm dependency update charts/znuny/znuny-0.1.0
   
       - name: Package chart
-        run: helm package charts/znuny -d ./helm
+        run: helm package charts/znuny/znuny-0.1.0 -d ./helm
             
       - name: Generate Changelog
         run: |
