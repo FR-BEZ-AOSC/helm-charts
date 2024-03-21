@@ -3,7 +3,8 @@ name: Release Workflow
 on:
   push:
     tags:
-    - znuny*
+      - '*'
+
 jobs:
   helm-release:
     runs-on: ubuntu-latest
@@ -17,32 +18,21 @@ jobs:
         with:
           version: "v3.5.4"
 
-     
       - name: Install dependencies
         run: helm dependency update charts/znuny/znuny-0.1.0
   
       - name: Package chart
         run: helm package charts/znuny/znuny-0.1.0 -d ./helm
+
             
-      - name: Generate Changelog
-        run: |
-          git fetch --tags
-          git log $(git describe --tags --abbrev=0)..HEAD --oneline --no-merges > CHANGELOG.txt
-          cat CHANGELOG.txt
-
-      - name: Extract tag name
-        id: extract-tag
-        run: echo "GIT_BRANCH=${GITHUB_REF/refs\/heads\//}" >> $GITHUB_ENV
-
-
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
           body_path: ${{ github.workspace }}/CHANGELOG.txt
           files: |
             ${{ github.workspace }}/helm/*.tgz
-          tag_name: ${{ env.GIT_BRANCH }}  
-          name:  ${{ env.GIT_BRANCH }}
+          tag_name: ${{ github.ref.tag_name}}  
+          name: ${{ github.ref.tag_name}}
           draft: false
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
