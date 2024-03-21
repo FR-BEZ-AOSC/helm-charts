@@ -1,0 +1,48 @@
+name: Release Workflow
+
+on:
+  push:
+    branches:
+      - ci
+jobs:
+  helm-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: "v3.5.4"
+
+     
+      - name: Install dependencies
+        run: helm dependency update charts/znuny
+  
+      - name: Package chart
+        run: helm package charts/znuny -d ./helm
+            
+      - name: Generate Changelog
+        run: |
+          git fetch --tags
+          git log $(git describe --tags --abbrev=0)..HEAD --oneline --no-merges > CHANGELOG.txt
+          cat CHANGELOG.txt
+
+      - name: Extract tag name
+        id: extract-tag
+        run: echo "GIT_BRANCH=${GITHUB_REF/refs\/heads\//}" >> $GITHUB_ENV
+
+
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: ${{ github.workspace }}/CHANGELOG.txt
+          files: |
+            ${{ github.workspace }}/helm/*.tgz
+          tag_name: tag   
+          name:  ${{ env.GIT_BRANCH }}
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
