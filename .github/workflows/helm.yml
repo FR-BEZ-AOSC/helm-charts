@@ -28,7 +28,7 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
-          body_path: ${{ github.workspace }}/CHANGELOG.txt
+          body_path: ${{ github.workspace }}/CHANGELOG.md
           files: |
             ${{ github.workspace }}/helm/*.tgz
           tag_name: ${{ github.ref.tag_name}}  
