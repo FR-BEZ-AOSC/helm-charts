@@ -2,8 +2,8 @@ name: Release Workflow
 
 on:
   push:
-    branches:
-      - ci
+    tags:
+    - znuny*
 jobs:
   helm-release:
     runs-on: ubuntu-latest
@@ -41,7 +41,7 @@ jobs:
           body_path: ${{ github.workspace }}/CHANGELOG.txt
           files: |
             ${{ github.workspace }}/helm/*.tgz
-          tag_name: tag   
+          tag_name: ${{ env.GIT_BRANCH }}  
           name:  ${{ env.GIT_BRANCH }}
           draft: false
           prerelease: false
