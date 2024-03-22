@@ -1,11 +1,9 @@
-name: Release Helm Workflow
+name: Release Helm chart  Workflow
 
 on:
   push:
-    branches:
-      - ci
-  #  tags:
-    #  - '*'
+    tags:
+     - '*'
 
 jobs:
   helm-release:
@@ -30,7 +28,9 @@ jobs:
         run : helm repo index  charts/znuny/  --merge  ${{ github.workspace }}/index.yaml
 
       - name: Copy index.yaml to chart directory
-        run: cp ${{ github.workspace }}/index.yaml charts/znuny/
+        run: |
+           cp ${{ github.workspace }}/index.yaml charts/znuny/
+           cat charts/znuny/index.yaml
 
       # - name: Update helm index
       #   run: |
