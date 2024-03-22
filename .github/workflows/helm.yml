@@ -24,12 +24,12 @@ jobs:
         run: helm dependency update charts/znuny/znuny-0.1.0
   
       - name: Package chart
-        run: helm package charts/znuny/znuny-0.1.0 -d ./helm
+        run: helm package charts/znuny/znuny-0.1.0 -d . 
 
       - name : Fuse helm index
         run : |
-          helm repo index  ./helm  --merge  ${{ github.workspace }}/index.yaml
-          ls -la 
+          helm repo index  .  --merge  index.yaml
+          ls -lR
           cat ${{ github.workspace }}/index.yaml
 
 
