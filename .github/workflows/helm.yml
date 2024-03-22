@@ -25,7 +25,7 @@ jobs:
         run: helm package charts/znuny/znuny-0.1.0 -d ./helm
 
       - name : Fuse helm index
-        run : helm repo index  charts/znuny/  --merge
+        run : helm repo index  charts/znuny/  --merge  ${{ github.workspace }}/index.yaml
 
             
       - name: Create release
