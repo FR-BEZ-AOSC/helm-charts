@@ -27,7 +27,9 @@ jobs:
       - name : Fuse helm index
         run : helm repo index  charts/znuny/  --merge  ${{ github.workspace }}/index.yaml
 
-            
+      - name : ls 
+        run : ls -lR    
+        
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
