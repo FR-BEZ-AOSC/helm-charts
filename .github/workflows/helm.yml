@@ -2,8 +2,10 @@ name: Release Helm Workflow
 
 on:
   push:
-    tags:
-      - '*'
+    branches:
+      - ci
+  #  tags:
+    #  - '*'
 
 jobs:
   helm-release:
@@ -29,6 +31,15 @@ jobs:
 
       - name : download helm index
         run : curl -o index.yaml https://raw.githubusercontent.com/znuny/znuny/master/index.yaml  
+
+      - name : update helm index
+        run :  |
+          git config --global "${{github.actor.email}}"
+          git config --global "${{github.actor.name}}""
+          git add index.yaml
+          git commit -m "update index.yaml"
+          git push
+          
         
       - name: Create release
         uses: softprops/action-gh-release@v1
