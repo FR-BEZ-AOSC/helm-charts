@@ -2,8 +2,10 @@ name: Release Helm chart  Workflow
 
 on:
   push:
-    tags:
-     - '*'
+    branches:
+      - ci 
+    # tags:
+    #  - '*'
 
 jobs:
   helm-release:
@@ -29,8 +31,7 @@ jobs:
 
       - name: Copy index.yaml to chart directory
         run: |
-           cp ${{ github.workspace }}/index.yaml charts/znuny/
-           cat charts/znuny/index.yaml
+           cat ${{ github.workspace }}/index.yaml
 
       # - name: Update helm index
       #   run: |
@@ -42,14 +43,14 @@ jobs:
       #     git push
           
         
-      - name: Create release
-        uses: softprops/action-gh-release@v1
-        with:
-          body_path: ${{ github.workspace }}/CHANGELOG.md
-          files: |
-            ${{ github.workspace }}/helm/*.tgz
-          tag_name: ${{ github.ref.tag_name}}  
-          name: ${{ github.ref.tag_name}}
-          draft: false
-          prerelease: false
-          token: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Create release
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     body_path: ${{ github.workspace }}/CHANGELOG.md
+      #     files: |
+      #       ${{ github.workspace }}/helm/*.tgz
+      #     tag_name: ${{ github.ref.tag_name}}  
+      #     name: ${{ github.ref.tag_name}}
+      #     draft: false
+      #     prerelease: false
+      #     token: ${{ secrets.GITHUB_TOKEN }}
