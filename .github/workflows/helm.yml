@@ -1,4 +1,4 @@
-name: Release Helm chart  Workflow
+name: Helm chart  Workflow
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
   helm:
     runs-on: ubuntu-latest
     env:
-      znuny-version: ${{github.ref.tag_name}}
+      znuny-version: 0.1.0
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
