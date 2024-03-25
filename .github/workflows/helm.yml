@@ -1,4 +1,4 @@
-name: Helm chart  Workflow
+name: Helm chart ci Workflow
 
 on:
   push:
@@ -21,10 +21,10 @@ jobs:
           version: "v3.5.4"
 
       - name: Install dependencies
-        run: helm dependency update charts/znuny/${{env.znuny-version}}
+        run: helm dependency update charts/znuny/znuny-${{env.znuny-version}}
   
       - name: Package chart
-        run: helm package charts/znuny/${{env.znuny-version}} -d . 
+        run: helm package charts/znuny/znuny-${{env.znuny-version}} -d . 
 
       - name: Set up Git
         run: |
@@ -34,7 +34,7 @@ jobs:
 
       - name: Update helm index
         run: |
-          helm repo index . --merge index.yaml --url https://github.com/FR-BEZ-AOSC/helm-charts/releases/download/${{env.znuny-version}}
+          helm repo index . --merge index.yaml --url https://github.com/FR-BEZ-AOSC/helm-charts/releases/download/znuny-${{env.znuny-version}}
           git add index.yaml
           git commit -m "Update Helm repository index"
           git push origin ci
