@@ -8,8 +8,7 @@ on:
 jobs:
   helm-index-update:
     runs-on: ubuntu-latest
-    env:
-      znuny-version: 0.1.0
+  
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -24,9 +23,8 @@ jobs:
             git config --global user.name "${{ github.actor }}"
             
 
-      - name: Update helm index
-        run: |
-            helm repo index . --merge index.yaml --url https://github.com/FR-BEZ-AOSC/helm-charts/releases/download/znuny-${{env.znuny-version}}
+      - name: Update helm index git
+        run: |   
             git add index.yaml
             git commit -m "Update Helm repository index"
             git push origin ci
