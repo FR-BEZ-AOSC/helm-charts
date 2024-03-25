@@ -1,0 +1,29 @@
+name: Release Helm chart  Workflow
+
+on:
+  push:
+     tags:
+       - '*'
+
+       
+jobs:
+    helm-release:
+      runs-on: ubuntu-latest
+  
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v2
+
+
+                  
+        - name: Create release
+          uses: softprops/action-gh-release@v1
+          with:
+            body_path: ${{ github.workspace }}/CHANGELOG.md
+            files: |
+                ${{ github.workspace }}/helm/*.tgz
+                tag_name: ${{ github.ref.tag_name}}  
+                name: ${{ github.ref.tag_name}}
+                draft: false
+                prerelease: false
+                token: ${{ secrets.GITHUB_TOKEN }}

@@ -2,10 +2,9 @@ name: Release Helm chart  Workflow
 
 on:
   push:
-   # branches:
-    #  - ci 
-     tags:
-       - '*'
+   branches:
+     - ci 
+   
 
 jobs:
   helm-release:
@@ -40,15 +39,4 @@ jobs:
           git push origin ci
         
           
-        
-      - name: Create release
-        uses: softprops/action-gh-release@v1
-        with:
-          body_path: ${{ github.workspace }}/CHANGELOG.md
-          files: |
-            ${{ github.workspace }}/helm/*.tgz
-          tag_name: ${{ github.ref.tag_name}}  
-          name: ${{ github.ref.tag_name}}
-          draft: false
-          prerelease: false
-          token: ${{ secrets.GITHUB_TOKEN }}
+
