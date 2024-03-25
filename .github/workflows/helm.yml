@@ -26,19 +26,20 @@ jobs:
       - name: Package chart
         run: helm package charts/znuny/znuny-0.1.0 -d . 
 
-      - name : Fuse helm index
-        run : |
-          helm repo index  .  --merge  index.yaml
-          ls -lR
-          cat ${{ github.workspace }}/index.yaml
-           
-
-
-      - name: Update helm index
+      - name: Set up Git
         run: |
           git config --global user.email "${{ secrets.GIT_USER_EMAIL }}"
           git config --global user.name "${{ github.actor }}"
-          git pull origin ci
+           
+
+      - name: Update helm index
+        run: |
+          helm repo index . --merge index.yaml
+          git add index.yaml
+          git commit -m "Update Helm repository index"
+          git push origin ci
+        
+
           
         
       # - name: Create release
