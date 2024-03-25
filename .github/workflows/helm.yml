@@ -2,10 +2,10 @@ name: Release Helm chart  Workflow
 
 on:
   push:
-    branches:
-      - ci 
-    # tags:
-    #  - '*'
+   # branches:
+    #  - ci 
+     tags:
+       - '*'
 
 jobs:
   helm-release:
@@ -34,7 +34,7 @@ jobs:
 
       - name: Update helm index
         run: |
-          helm repo index . --merge index.yaml
+          helm repo index . --merge index.yaml 
           git add index.yaml
           git commit -m "Update Helm repository index"
           git push origin ci
