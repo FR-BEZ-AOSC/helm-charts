@@ -2,8 +2,10 @@ name: Helm chart ci Workflow
 
 on:
   push:
-   branches:
-     - ci 
+    branches:
+      - ci
+    tags:
+      - '*' 
    
 
 jobs:
@@ -30,14 +32,24 @@ jobs:
         run: |
           git config --global user.email "${{ secrets.GIT_USER_EMAIL }}"
           git config --global user.name "${{ github.actor }}"
-           
+          
 
       - name: Update helm index
         run: |
-          helm repo index . --merge index.yaml --url https://github.com/FR-BEZ-AOSC/helm-charts/releases/download/znuny-${{env.znuny-version}}
-          git add index.yaml
-          git commit -m "Update Helm repository index"
-          git push origin ci
+              helm repo index . --merge index.yaml --url https://github.com/FR-BEZ-AOSC/helm-charts/releases/download/znuny-${{env.znuny-version}}
+              git add index.yaml
+              git commit -m "Update Helm repository index"
+              git push origin ci
         
-          
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: ${{ github.workspace }}/CHANGELOG.md
+          files: |
+              ${{ github.workspace }}/helm/*.tgz
+          tag_name: ${{ github.ref.tag_name}}  
+          name: ${{ github.ref.tag_name}}
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}   
 
