@@ -1,15 +1,13 @@
-name: Helm chart ci Workflow
+name: Helm chart release
 
 on:
   push:
-    branches:
-      - ci
     tags:
       - '*' 
    
 
 jobs:
-  helm:
+  create-release:
     runs-on: ubuntu-latest
     env:
       znuny-version: 0.1.0
@@ -28,18 +26,6 @@ jobs:
       - name: Package chart
         run: helm package charts/znuny/znuny-${{env.znuny-version}} -d . 
 
-      - name: Set up Git
-        run: |
-          git config --global user.email "${{ secrets.GIT_USER_EMAIL }}"
-          git config --global user.name "${{ github.actor }}"
-          
-
-      - name: Update helm index
-        run: |
-              helm repo index . --merge index.yaml --url https://github.com/FR-BEZ-AOSC/helm-charts/releases/download/znuny-${{env.znuny-version}}
-              git add index.yaml
-              git commit -m "Update Helm repository index"
-              git push origin ci
         
       - name: Create release
         uses: softprops/action-gh-release@v1
