@@ -1,4 +1,4 @@
-name: Helm chart release
+name: Helm chart release and update index
 
 on:
   push:
@@ -44,6 +44,7 @@ jobs:
 
   helm-index-update:
     needs: create-release
+  
     runs-on: ubuntu-latest
   
     steps:
