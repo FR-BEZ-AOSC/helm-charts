@@ -64,7 +64,8 @@ jobs:
             
 
       - name: Update helm index git
-        run: |   
+        run: | 
+            git checkout ci  
             git add index.yaml
             git commit -m "Update Helm repository index"
             git push origin ci
