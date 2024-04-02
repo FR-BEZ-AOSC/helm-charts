@@ -9,11 +9,14 @@ on:
 jobs:
   create-release:
     runs-on: ubuntu-latest
+    
     env:
       znuny-version: 0.1.0
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       
 
       - name: Set up Helm
@@ -47,7 +50,9 @@ jobs:
             
 
       - name: Update helm index git
-        run: |  
+        run: |
+            git branch  
+            git fetch origin ci:ci
             git checkout ci 
             helm repo index . --merge index.yaml --url https://github.com/FR-BEZ-AOSC/helm-charts/releases/download/znuny-${{env.znuny-version}} 
             git add index.yaml
