@@ -4,8 +4,7 @@ on:
   push:
     tags:
       - '*' 
-    branches:
-      - ci 
+ 
 
 jobs:
   create-release:
@@ -44,6 +43,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}   
 
   helm-index-update:
+    needs: create-release
     runs-on: ubuntu-latest
   
     steps:
