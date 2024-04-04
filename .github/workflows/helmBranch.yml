@@ -23,7 +23,7 @@ jobs:
         with:
           version: "v3.5.4"
 
-      - name: Extract tag name
+      - name: Extract tag name from branch
         id: extract-tag
         run: echo "GIT_BRANCH=${GITHUB_REF/refs\/heads\//}" >> $GITHUB_ENV
 
