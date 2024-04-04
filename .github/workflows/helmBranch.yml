@@ -3,7 +3,7 @@ name: Helm chart release and update index
 on:
   push:
     branches:
-      -  '*.*.*'
+      -  znuny-0.1.0
  
 
 jobs:
