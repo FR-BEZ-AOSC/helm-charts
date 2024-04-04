@@ -55,8 +55,8 @@ jobs:
       - name: Update helm index git
         run: |
             git branch  
-            git fetch origin ci:ci
-            git checkout ci 
+            git fetch origin ${{env.GIT_BRANCH}}:${{env.GIT_BRANCH}}
+            git checkout ${{env.GIT_BRANCH}} 
             helm repo index . --merge index.yaml --url https://github.com/FR-BEZ-AOSC/helm-charts/releases/download/${{env.GIT_BRANCH}}
             git add index.yaml
             git commit -m "Update Helm repository index"
