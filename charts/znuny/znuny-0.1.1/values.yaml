@@ -23,7 +23,7 @@ replicaCount: 1
 
 image:
   repository: ghcr.io/fr-bez-aosc/docker-znuny
-  tag: v6.5.4-1
+  tag: 6.1.1-0
   pullPolicy: IfNotPresent
   pullSecrets: []
     # - name: gh
@@ -34,8 +34,7 @@ config:
     path: /var/log/znuny
 
   database:
-    type: pgsql
-    # host: 
+    # host: postgresql.default.svc.cluster.local
     port: 5432
     name: znuny
     user: znuny
@@ -55,46 +54,30 @@ config:
 
   mails:
     type: internal
-    host: smtp.domain.tld
-    port: 25
-    user: znuny@domain.tld
-    password: password
+    # host: smtp.domain.tld
+    # port: 25
+    # user: znuny@domain.tld
+    # password: password
 
   authentications:
     customers:
       backends: {}
       # backends:
       #   - |-
-      #     $$Self->{AuthModule} = 'Kernel::System::Auth::LDAP';
-      #     $$Self->{'AuthModule::LDAP::Host'} = 'ldap.example.com';
-      #     $$Self->{'AuthModule::LDAP::BaseDN'} = 'dc=example,dc=com';
-      #     $$Self->{'AuthModule::LDAP::UID'} = 'uid';
-      #     $$Self->{'AuthModule::LDAP::GroupDN'} = 'cn=znuny-allow,ou=posixGroups,dc=example,dc=com';
-      #     $$Self->{'AuthModule::LDAP::AccessAttr'} = 'memberUid';
-      #     $$Self->{'AuthModule::LDAP::UserAttr'} = 'UID';
-      #     $$Self->{'AuthModule::LDAP::UserAttr'} = 'DN';
+      #
       synchronizations: {}
       # synchronizations:
       # - |-
-      #   $$Self->{'AuthSyncModule'} = 'Kernel::System::Auth::Sync::LDAP';
-      #   $$Self->{'AuthSyncModule::LDAP::Host'} = 'ldap.example.com';
-      #   $$Self->{'AuthSyncModule::LDAP::BaseDN'} = 'dc=example,dc=com';
-      #   $$Self->{'AuthSyncModule::LDAP::UID'} = 'uid';
-      #   $$Self->{'AuthSyncModule::LDAP::SearchUserDN'} = '';
-      #   $$Self->{'AuthSyncModule::LDAP::SearchUserPw'} = '';
-      #   $$Self->{'AuthSyncModule::LDAP::AlwaysFilter'} = '';
-      #   $$Self->{'AuthSyncModule::LDAP::UserSyncMap'} = {
-      #       UserFirstname => 'givenName',
-      #       UserLastname  => 'sn',
-      #       UserEmail     => 'mail',
-      #   };
+      #
     agents:
       backends: {}
       # backends:
       # - |-
+      #
       synchronizations: {}
       # synchronizations:
       # - |-
+      #
 
 autoscaling: {}
 # autoscaling:
@@ -113,11 +96,9 @@ ingress:
   annotations: []
   # annotations:
   #   - "kubernetes.io/ingress.class: nginx"
+  #   - "cert-manager.io/cluster-issuer: <issuer>"
   tls:
     enabled: false
-    annotations: []
-    # annotations:
-    #   - "cert-manager.io/cluster-issuer: letsencrypt-prod"
 
 persistentVolumeClaims: {}
 # persistentVolumeClaims:
@@ -134,98 +115,10 @@ podAnnotations: {}
 resources: {}
 # resources:
 #   limits:
-#     cpu: 100m
-#     memory: 128Mi
+#     cpu: 1000m
+#     memory: 1024Mi
 #   requests:
-#     cpu: 100m
-#     memory: 128Mi
+#     cpu: 500m
+#     memory: 512Mi
 
-jobs:
-  upgrade:
-    enabled: false
-
-postgresql:
-  enabled: true
-
-  labels: {}
-  # labels:
-  #   service: postgresql
-
-  podAnnotations: {}
-  # podAnnotations:
-  #   - ""
-
-
-  image:
-    repository: postgres
-    tag: 13
-    pullPolicy: IfNotPresent
-    pullSecrets: []
-    # pullSecrets:
-    #   - name: gh
-    #     secret: 
-
-
-  config:
-    database: znuny
-    user: znuny
-    password: password
-
-    data:
-      path: /var/lib/postgresql/data/pgdata
-
-  replicas: 1
-  restartPolicy: Always
-  deploymentStrategy: Recreate
-
-  imagePullSecrets: []
-  # imagePullSecrets:
-  #   - github-registry-secret
-
-  persistentVolumeClaims:
-    - name: "data"
-      size: "10Gi"
-      accessModes: 
-        - ReadWriteOnce
-      mount: "/var/lib/postgresql/data"
-
-  # resources: {}
-  resources:
-    limits:
-      cpu: 100m
-      memory: 128Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
-
-  service:
-    type: ClusterIP
-    port: 5432
-
-
-mariadb:
-  enabled: false
-  port: 3306
-  database: znuny
-  user: znuny
-  password: password
-  root_password: password
-
-##TODO
-podsecurityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-##TODO
-nodeSelector: {}
-
-##TODO
-tolerations: []
-
-##TODO
-affinity: {}
 

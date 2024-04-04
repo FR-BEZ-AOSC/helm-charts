@@ -31,7 +31,7 @@ spec:
       containers:
         - name: znuny
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-          imagePullPolicy: {{ .Values.postgresql.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.service.port }}
           {{- if .Values.resources }}
