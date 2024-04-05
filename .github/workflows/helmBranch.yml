@@ -3,7 +3,7 @@ name: Helm chart release and update index
 on:
   push:
     branches:
-      -  znuny-0.1.0
+      -  'znuny-*.*.*'
  
 
 jobs:
@@ -36,7 +36,7 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
-          body_path: ${{ github.workspace }}/CHANGELOG.md
+          body_path: ${{ github.workspace }}/charts/znuny/${{env.GIT_BRANCH}}/CHANGELOG.md
           files: |
               ${{ github.workspace }}/*.tgz
           tag_name: ${{env.GIT_BRANCH}} 
