@@ -87,7 +87,7 @@ spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
         {{- range $ps := .Values.image.pullSecrets }}
-        - name: {{ $rel.Name }}-{{ $ps.name }}-registry-secret
+        - name: {{ $ps.name }}-registry-secret
         {{- end }}
       {{- end }}
       {{- if or .Values.persistentVolumeClaims .Values.extraConfigmapMounts }}
