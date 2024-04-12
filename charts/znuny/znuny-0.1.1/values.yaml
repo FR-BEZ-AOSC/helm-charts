@@ -23,7 +23,7 @@ replicaCount: 1
 
 image:
   repository: ghcr.io/fr-bez-aosc/docker-znuny
-  tag: 6.5.7-0
+  tag: 6.1.1-0
   pullPolicy: IfNotPresent
   pullSecrets: []
     # - name: gh
