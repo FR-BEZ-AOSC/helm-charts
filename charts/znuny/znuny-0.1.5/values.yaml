@@ -59,25 +59,9 @@ config:
     # user: znuny@domain.tld
     # password: password
 
-  authentications:
-    customers:
-      backends: {}
-      # backends:
-      #   - |-
-      #
-      synchronizations: {}
-      # synchronizations:
-      # - |-
-      #
-    agents:
-      backends: {}
-      # backends:
-      # - |-
-      #
-      synchronizations: {}
-      # synchronizations:
-      # - |-
-      #
+  # authentications:
+  #   - |-
+  #     ...
 
 autoscaling: {}
 # autoscaling:
@@ -121,4 +105,19 @@ resources: {}
 #     cpu: 500m
 #     memory: 512Mi
 
+extraConfigMaps: []
+  # - name: config-pm
+  #   items:
+  #     - key: Config.pm
+  #       data: |-
+  #         ...
 
+extraConfigmapMounts: []
+  # - name: config-pm
+  #   mountPath: /opt/otrs/Kernel/Config.pm
+  #   configMap: config-pm
+  #   subpath: Config.pm
+
+
+
+  

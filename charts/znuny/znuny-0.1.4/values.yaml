@@ -23,7 +23,7 @@ replicaCount: 1
 
 image:
   repository: ghcr.io/fr-bez-aosc/docker-znuny
-  tag: 6.4.5-0
+  tag: 6.5.7-0
   pullPolicy: IfNotPresent
   pullSecrets: []
     # - name: gh
@@ -59,25 +59,9 @@ config:
     # user: znuny@domain.tld
     # password: password
 
-  authentications:
-    customers:
-      backends: {}
-      # backends:
-      #   - |-
-      #
-      synchronizations: {}
-      # synchronizations:
-      # - |-
-      #
-    agents:
-      backends: {}
-      # backends:
-      # - |-
-      #
-      synchronizations: {}
-      # synchronizations:
-      # - |-
-      #
+  # authentications:
+  #   - |-
+  #     ...
 
 autoscaling: {}
 # autoscaling:
@@ -121,4 +105,19 @@ resources: {}
 #     cpu: 500m
 #     memory: 512Mi
 
+extraConfigMaps: []
+  # - name: config-pm
+  #   items:
+  #     - key: Config.pm
+  #       data: |-
+  #         ...
 
+extraConfigmapMounts: []
+  # - name: config-pm
+  #   mountPath: /opt/otrs/Kernel/Config.pm
+  #   configMap: config-pm
+  #   subpath: Config.pm
+
+
+
+  

@@ -31,20 +31,4 @@ data:
 {{- else if eq .Values.config.mails.type "internal" }}
   ZNUNY_MAILING_TYPE: {{ .Values.config.mails.type }}
 {{- end }}
-  {{- range $index, $value := .Values.config.authentications.customers.backends }}
-  ZNUNY_CUSTOMER_BACKEND_{{ add $index 1 }}: |-
-    {{- $value | nindent 4 }}
-  {{- end }}
-  {{- range $index, $value := .Values.config.authentications.customers.synchronizations }}
-  ZNUNY_CUSTOMER_SYNCHRO_{{ add $index 1 }}: |-
-    {{- $value | nindent 4 }}
-  {{- end }}
-  {{- range $index, $value := .Values.config.authentications.agents.backends }}
-  ZNUNY_AGENTS_BACKEND_{{ add $index 1 }}: |-
-    {{- $value | nindent 4 }}
-  {{- end }}
-  {{- range $index, $value := .Values.config.authentications.agents.synchronizations }}
-  ZNUNY_AGENTS_SYNCHRO_{{ add $index 1 }}: |-
-    {{- $value | nindent 4 }}
-  {{- end }}
 

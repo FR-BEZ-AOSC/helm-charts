@@ -33,7 +33,8 @@ spec:
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: {{ .Values.service.port }}
+            - name: znuny-http
+              containerPort: {{ .Values.service.port }}
           {{- if .Values.resources }}
           resources:
             limits:
@@ -45,18 +46,42 @@ spec:
           {{- else }}
           resources: {}
           {{- end }}
-          {{- if .Values.persistenVolumeClaims }}
+          {{- if or .Values.persistenVolumeClaims .Values.extraConfigmapMounts }}
           volumeMounts:
+          {{- end }}
             {{- range $pvc := .Values.persistentVolumeClaims }}
             - mountPath: {{ $pvc.mount }}
               name: {{ $rel.Name }}-{{ $pvc.name }}
             {{- end }}
-          {{- end }}
+            {{- range $ecmm := .Values.extraConfigmapMounts }}
+            - name: {{ $ecmm.name }}
+              mountPath: {{ $ecmm.mountPath }}
+              subPath: {{ $ecmm.subpath }}
+            {{- end }}
           envFrom:
           - configMapRef:
               name: znuny-config
           - secretRef:
               name: znuny-secrets
+          livenessProbe:
+            httpGet:
+              path: /otrs/index.pl
+              port: znuny-http
+            failureThreshold: 1
+            periodSeconds: 5
+          startupProbe:
+            httpGet:
+              path: /otrs/index.pl
+              port: znuny-http
+            failureThreshold: 10
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - cat
+                - /opt/otrs/healthy
+            initialDelaySeconds: 10
+            periodSeconds: 5
       hostname: {{ $rel.Name }}
       restartPolicy: {{ .Values.restartPolicy }}
       {{- if .Values.image.pullSecrets }}
@@ -65,11 +90,18 @@ spec:
         - name: {{ $rel.Name }}-{{ $ps.name }}-registry-secret
         {{- end }}
       {{- end }}
-      {{- if .Values.persistentVolumeClaims }}
+      {{- if or .Values.persistentVolumeClaims .Values.extraConfigmapMounts }}
       volumes:
+      {{- end }}
         {{- range $pvc := .Values.persistentVolumeClaims }}
         - name: {{ $rel.Name }}-{{ $pvc.name }}
           persistentVolumeClaim:
             claimName: {{ $rel.Name }}-{{ $pvc.name }}
         {{- end }}
-      {{- end }}
+        {{- range $ecmm := .Values.extraConfigmapMounts }}
+        - name: {{ $ecmm.name }}
+          configMap:
+            name: {{ $ecmm.configMap }}
+        {{- end }}
+
+
