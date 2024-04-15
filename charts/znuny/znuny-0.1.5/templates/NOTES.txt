@@ -31,19 +31,19 @@ To connect to the container shell :
 
     kubectl --namespace {{ .Release.Namespace }} exec -ti <pod> -- /bin/bash
 
-    > NOTE: In this way, any actions performed will be executed as root.
+> NOTE: In this way, any actions performed will be executed as root.
 
 To connect to the container shell with the application user :
 
     kubectl --namespace {{ .Release.Namespace }} exec -ti <pod> -- su otrs -s /bin/bash
 
-    > NOTE: You can now run Znuny's CLI command with the application console : "./bin/otrs.Console.pl List".
+> NOTE: You can now run Znuny's CLI command with the application console : "./bin/otrs.Console.pl List".
 
 To run a Znuny's CLI command without persistent shell connection :
 
     kubectl --namespace {{ .Release.Namespace }} exec -ti <pod> -- su -c "/opt/otrs/bin/otrs.Console.pl List" -s /bin/sh otrs
 
-    > NOTE: Take care to not run deamonized process.
+> NOTE: Take care to not run deamonized process.
 
 Znuny deployment successfully completed !
 
