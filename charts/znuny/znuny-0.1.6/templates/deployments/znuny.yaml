@@ -16,12 +16,12 @@ metadata:
     {{- toYaml .Values.pod.annotations | nindent 4 }}
   {{- end }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.pod.replicaCount }}
   selector:
     matchLabels:
       instance: {{ $rel.Namespace }}-znuny
   strategy:
-    type: {{ .Values.deploymentStrategy }}
+    type: {{ .Values.pod.deploymentStrategy }}
   template:
     metadata:
       labels:
@@ -120,7 +120,7 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 5
       hostname: {{ $rel.Name }}
-      restartPolicy: {{ .Values.restartPolicy }}
+      restartPolicy: {{ .Values.pod.restartPolicy }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
         {{- range $ps := .Values.image.pullSecrets }}

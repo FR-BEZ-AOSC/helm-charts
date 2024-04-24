@@ -8,14 +8,9 @@ metadata:
   labels:
     app: znuny
     service: {{ .Release.Name }}-{{ .Release.Namespace }}
+  {{- if .Values.ingress.annotations }}
   annotations:
-  {{- range $annotation := .Values.ingress.annotations }}
-    {{ $annotation }}
-  {{- end }}
-  {{- if .Values.ingress.tls.enabled }}
-    {{- range $annotation := .Values.ingress.annotations }}
-    {{ $annotation }}
-    {{- end }}
+    {{- toYaml .Values.ingress.annotations | nindent 4 }}
   {{- end }}
 spec:
   rules:

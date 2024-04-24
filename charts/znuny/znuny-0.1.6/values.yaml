@@ -2,70 +2,89 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# -- Set a name to override the release name to deploy to.
+# nameOverride -- Set a name to override the release name to deploy to.
+# @default -- {}
 nameOverride: {}
 
 # -- Set a name to override the namespace name to deploy to.
+# @default -- {}
 namespaceOverride: {}
 
 # -- Set a service account.
 serviceAccount:
-  # -- Specifies whether a service account should be created.
-  create: false
-  # -- Set annotations to add to the service account.
-  annotations: {}
-  # -- Set he name of the service account to use.
-  name: "znuny"
 
-# -- Set the restart policy.
-restartPolicy: Always
-# -- Set the deployment strategy.
-deploymentStrategy: Recreate
-# -- Set replicas count.
-replicaCount: 1
+  # -- Specifies whether a service account should be created.
+  # @default -- false
+  create: false
+
+  # -- Set annotations to add to the service account.
+  # @default -- {}
+  annotations: {}
+
+  # -- Set he name of the service account to use.
+  # @default -- "znuny"
+  name: "znuny"
 
 # -- Set the container image specifications.
 image:
+
   # -- Set the container image to use.
   repository: ghcr.io/fr-bez-aosc/docker-znuny
+
   # -- Set the image tag to use.
   tag: 6.5.8-0
+
   # -- Set the image pull policy.
   pullPolicy: IfNotPresent
+
   # -- Set a registry pull secret if a custom image hosted on a private registry is used.
-  # -- The secret must be encoded in base64.
+  # The secret must be encoded in base64.
+  pullSecrets: []
   # pullSecrets:
     # - name: ghcr
     #   secret: 
-  pullSecrets: []
 
 # -- Set Znuny's configurations.
 config:
+
   # -- Set the application logging.
   logs:
+
     # -- Set a path to Znuny's file logging.
-    # -- The file logging is enabled only if the key "path" is set.
+    # The file logging is enabled only if the key "path" is set.
     path: /var/log/znuny
 
   # -- Set the connection of the PostgreSQL database.
   database:
+
     # -- Set the host of the database.
+    # @section -- Required
     host: {}
+
     # -- Set the port of the database.
+    # @section -- Required
     port: 5432
+
     # -- Set the name of the database.
+    # @section -- Required
     name: znuny
+
     # -- Set the database username to connect to.
-    # -- Ignored if an externalSecret is defined.
+    # Ignored if an externalSecret is defined.
+    # @section -- Required
     username: {}
+
     # -- Set the database password to connect to.
-    # -- Ignored if an externalSecret is defined.
+    # Ignored if an externalSecret is defined.
+    # @section -- Required
     password: {}
+
     # -- Define the name of a Kubernetes secret to set the database credentials.
-    # -- If externalSecret is defined, keys "username" and "password" will be ignored.
+    # If externalSecret is defined, keys "username" and "password" will be ignored.
+    # @section -- Required
+    externalSecret: {}
     # externalSecret:
     #   name: znuny-database-credentials
-    externalSecret: {}
 
   # -- Set Apache2 custom configurations.
   apache:
@@ -73,68 +92,85 @@ config:
     domain: {}
     # -- Set rewrite rules in Apache2 configurations.
     rewriteRules:
+
       # -- Set the rewrite rules to be included.
+      rules: {}
       # rules: |-
       #   RewriteRule ^/$ https://%{HTTP_HOST}/otrs/customer.pl
       #   RewriteRule ^/otrs/$ https://%{HTTP_HOST}/otrs/customer.pl
       #   RewriteRule ^/otrs$ https://%{HTTP_HOST}/otrs/customer.pl
-      rules: {}
+
       # -- Define the name of a Kubernetes configMap to set the Apache2 rewrite rules.
-      # -- If externalConfigMap is defined, the key "rules" will be ignored.
+      # If externalConfigMap is defined, the key "rules" will be ignored.
+      externalConfigMap: {}
       # externalConfigMap:
       #   name: znuny-apache-rewrite-rules
-      externalConfigMap: {}
 
   # -- Set Znuny's local users.
   users:
+
     # -- Setting of the administrator user.
     admin:
+
       # -- Set the administrator's username.
-      # -- Ignored if an externalSecret is defined.
+      # Ignored if an externalSecret is defined.
       username: root@localhost
+
       # -- Set the administrator's password.
-      # -- Ignored if an externalSecret is defined.
+      # Ignored if an externalSecret is defined.
       password: {}
+
       # -- Define the name of a Kubernetes secret to set the administrator credentials.
-      # -- If externalSecret is defined, keys "username" and "password" will be ignored.
+      # If externalSecret is defined, keys "username" and "password" will be ignored.
+      externalSecret: {}
       # externalSecret:
       #   name: znuny-users-admin-credentials
-      externalSecret: {}
 
   # -- Set the application e-mail notifications system.
-  # -- There are two mailing type :
-  # --   - sendmail: Send mail with the local sendmail module.
-  # --   - smtp: Connect to an external SMTP server to send mails.
-  # -- Both features can't be activated simultaneously.
-  # -- The feature "sendmail" will be prioritized over "smtp" as long as its "enabled" key is set to true.
+  # There are two mailing type :
+  #   - sendmail: Send mail with the local sendmail module.
+  #   - smtp: Connect to an external SMTP server to send mails.
+  # Both features can't be activated simultaneously.
+  # The feature "sendmail" will be prioritized over "smtp" as long as its "enabled" key is set to true.
   mails:
+
     # -- Setting of the local Sendmail module.
     sendmail:
+
       # -- Enable the Sendmail module.
-      enabled: false
+      enabled: true
+
     # -- Setting of the SMTP connection.
     smtp:
+
       # -- Enable the SMTP connection.
-      enabled: true
+      enabled: false
+
       # -- Set the host of the SMTP server
       host: {}
+
       # -- Set the port of the SMTP server
       port: {}
+
       # -- Set the SMTP server username to connect to.
-      # -- Ignored if an externalSecret is defined.
+      # Ignored if an externalSecret is defined.
       username: {}
+
       # -- Set the SMTP server password to connect to.
-      # -- Ignored if an externalSecret is defined.
+      # Ignored if an externalSecret is defined.
       password: {}
+
       # -- Define the name of a Kubernetes secret to set the SMTP server credentials.
-      # -- If externalSecret is defined, keys "username" and "password" will be ignored.
+      # If externalSecret is defined, keys "username" and "password" will be ignored.
+      externalSecret: {}
       # externalSecret:
       #   name: znuny-smtp-credentials
-      externalSecret: {}
 
   # -- Set the application authentication backends.
   authentications:
+
     # -- Set the authentications backends configurations as following in a single block.
+    backends: {}
     # backends: |-
     #   $Self->{CustomerUser1} = {
     #       Name => 'LDAP Data Source',
@@ -156,83 +192,115 @@ config:
     #           },
     #       },
     # (...)
-    backends: {}
+
     # -- Define the name of a Kubernetes secret to set the application authentication backends.
-    # -- If externalSecret is defined, the key "backends" will be ignored.
+    # If externalSecret is defined, the key "backends" will be ignored.
+    externalSecret: {}
     # externalSecret:
     #   name: znuny-authentication-backends
-    externalSecret: {}
 
 # -- Set the auto scaling of Znuny.
-# autoscaling:
-#   # -- Set the minimum of replicas.
-#   minReplicas: 1
-#   # -- Set the miximum of replicas.
-#   maxReplicas: 3
-#   # -- Set the percentage of cpu to trigger the scaling.
-#   targetCPUUtilizationPercentage: 20
-#   # -- Set the percentage of memory to trigger the scaling.
-#   targetMemoryUtilizationPercentage: 50
-autoscaling: {}
+autoscaling:
+
+  # -- Enable the Horizontal pod scaling
+  enabled: false
+
+  # -- Set the minimum of replicas.
+  minReplicas: 1
+
+  # -- Set the miximum of replicas.
+  maxReplicas: 3
+
+  # -- Set the percentage of cpu to trigger the scaling.
+  targetCPUUtilizationPercentage: 20
+
+  # -- Set the percentage of memory to trigger the scaling.
+  targetMemoryUtilizationPercentage: 50
 
 # -- Set the Kubernetes services specifications.
 service:
+
   # -- Set the service type.
   type: ClusterIP
+
   # -- Set the service port.
   port: 80
 
 # -- Set the Kubernetes ingress specifications.
 ingress:
+
   # -- Enable the ingress features.
   enabled: false
+
   # -- Set the public domain on which Znuny will be exposed.
   domain: {}
+
   # -- Set annotations to add to the ingress.
+  annotations: {}
   # annotations:
-  #   - "kubernetes.io/ingress.class: nginx"
-  #   - "cert-manager.io/cluster-issuer: <issuer>"
-  annotations: []
+  #   kubernetes.io/ingress.class: nginx
+  #   cert-manager.io/cluster-issuer: <issuer>
+
   # -- Set TLS configurations.
   tls:
+
     # -- Enable TLS support.
     enabled: false
 
 # -- Set persistant volumes.
-# -- The access mode depend to your CSI
+# The access mode depend to your CSI
+persistentVolumeClaims: {}
 # persistentVolumeClaims:
 #   - name: "data"
 #     size: "100Mi"
 #     mount: "/datas"
 #     accessModes:
 #       - ReadWriteOnce
-persistentVolumeClaims: {}
 
 # -- Set Znuny's pod specifications
 pod:
+  # -- Set the restart policy.
+  restartPolicy: Always
+
+  # -- Set the deployment strategy.
+  deploymentStrategy: Recreate
+
+  # -- Set replicas count.
+  replicaCount: 1
+
   # -- Set annotations to add to Znuny's pod.
+  annotations: {}
   # annotations:
   #   mykey: "myvalue"
-  annotations: {}
+
   # -- Set labels to add to Znuny's pod.
+  labels: {}
   # labels:
   #   mykey: "myvalue"
-  labels: {}
+
   # -- Set Znuny's container resources.
   resources:
+
     # -- Set Znuny's container limits.
     limits:
+
       # -- Set Znuny's container cpu limits.
       cpu: 2000m
+
       # -- Set Znuny's container memory limits.
       memory: 4096Mi
+
     # -- Set Znuny's container requests.
     requests:
+
       # -- Set Znuny's container cpu requests.
       cpu: 1000m
+
       # -- Set Znuny's container memory requests.
       memory: 2048Mi
+
   # -- Set Znuny's pod security contexts.
+  securityContext: {}
   # securityContext:
   #   # -- Set the user to run as.
   #   runAsUser: {}
@@ -240,9 +308,10 @@ pod:
   #   runAsGroup: {}
   #   # -- Set the filesystem group.
   #   fsGroup: {}
-  securityContext: {}
 
 # -- Set extras Kubernetes configMaps.
+# @section -- Extra
+extraConfigMaps: []
 # extraConfigMaps:
 #   # -- Set the name of the configMap.
 #   - name: config-pm
@@ -253,19 +322,18 @@ pod:
 #         # -- Set the datas.
 #         data: |-
 #           (...)
-extraConfigMaps: []
 
-# -- Set extras Kubernetes configMaps mounts.
-# extraConfigmapMounts:
-#   # -- Set the name of the mount.
-#   - name: config-pm
-#     # -- Set the path to mount the configMap in the container.
-#     mountPath: /opt/otrs/Kernel/Config.pm
-#     # -- Set the name of the configMap to use to.
-#     configMap: config-pm
-#     # -- Set the name of the configMap key to mount as a file in the container.
-#     subpath: Config.pm
+# extraConfigmapMounts -- Set extras Kubernetes configMaps mounts.
+# @section -- Extra
 extraConfigmapMounts: []
+    # extraConfigmapMounts.name -- Set the name of the mount.
+    # - name: config-pm
+    # -- Set the path to mount the configMap in the container.
+    # mountPath: /opt/otrs/Kernel/Config.pm
+    # -- Set the name of the configMap to use to.
+    # configMap: config-pm
+    # -- Set the name of the configMap key to mount as a file in the container.
+    # subpath: Config.pm
 
 
 
