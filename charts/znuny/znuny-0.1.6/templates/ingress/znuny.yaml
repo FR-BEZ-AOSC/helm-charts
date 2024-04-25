@@ -19,7 +19,7 @@ spec:
         paths:
           - backend:
               service:
-                name: znuny
+                name: {{ .Release.Name }}-znuny
                 port:
                   number: {{ .Values.service.port }}
             path: /

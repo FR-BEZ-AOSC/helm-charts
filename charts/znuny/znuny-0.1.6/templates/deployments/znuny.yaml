@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: znuny
+  name: {{ $rel.Name }}-znuny
   namespace: {{ $rel.Namespace }}
   labels:
     app: znuny
@@ -19,7 +19,7 @@ spec:
   replicas: {{ .Values.pod.replicaCount }}
   selector:
     matchLabels:
-      instance: {{ $rel.Namespace }}-znuny
+      instance: {{ $rel.Name }}-{{ $rel.Namespace }}-znuny
   strategy:
     type: {{ .Values.pod.deploymentStrategy }}
   template:
@@ -27,7 +27,7 @@ spec:
       labels:
         app: znuny
         service: {{ $rel.Name }}-{{ $rel.Namespace }}
-        instance: {{ $rel.Namespace }}-znuny
+        instance: {{ $rel.Name }}-{{ $rel.Namespace }}-znuny
     spec:
       containers:
         - name: znuny
@@ -121,11 +121,14 @@ spec:
             periodSeconds: 5
       hostname: {{ $rel.Name }}
       restartPolicy: {{ .Values.pod.restartPolicy }}
-      {{- if .Values.image.pullSecrets }}
+      {{- if or .Values.image.pullSecrets .Values.image.externalPullSecrets }}
       imagePullSecrets:
-        {{- range $ps := .Values.image.pullSecrets }}
+      {{- end }}
+      {{- range $ps := .Values.image.pullSecrets }}
         - name: {{ $ps.name }}-container-registry
-        {{- end }}
+      {{- end }}
+      {{- range $eps := .Values.image.externalPullSecrets }}
+        - name: {{ $eps.name }}
       {{- end }}
       {{- if or .Values.persistentVolumeClaims .Values.extraConfigmapMounts }}
       volumes:

@@ -3,12 +3,12 @@
 # Declare variables to be passed into your templates.
 
 # nameOverride -- Set a name to override the release name to deploy to.
-# @default -- {}
-nameOverride: {}
+# @default -- 
+nameOverride: 
 
 # -- Set a name to override the namespace name to deploy to.
 # @default -- {}
-namespaceOverride: {}
+namespaceOverride: 
 
 # -- Set a service account.
 serviceAccount:
@@ -29,7 +29,7 @@ serviceAccount:
 image:
 
   # -- Set the container image to use.
-  repository: ghcr.io/fr-bez-aosc/docker-znuny
+  repository: ghcr.io/fr-bez-aosc/znuny
 
   # -- Set the image tag to use.
   tag: 6.5.8-0
@@ -38,14 +38,29 @@ image:
   pullPolicy: IfNotPresent
 
   # -- Set a registry pull secret if a custom image hosted on a private registry is used.
+  # Use it only if a pullSecret has to be created. Otherwise, use the externalPullSecrets key.
+  # Both keys can be used simultaneously.
   # The secret must be encoded in base64.
   pullSecrets: []
   # pullSecrets:
-    # - name: ghcr
-    #   secret: 
+  #   - name: ghcr
+  #     secret: efef
+
+  # -- Set an external registry pull secret if a custom image hosted on a private registry is used.
+  # Use it only if an external pullSecret exists. Otherwise, use the pullSecrets key.
+  # Both keys can be used simultaneously.
+  externalPullSecrets: []
+  # externalPullSecrets:
+  #   - name: container-registry
 
 # -- Set Znuny's configurations.
 config:
+
+  # -- Set the container timezone.
+  timezone: Etc/UTC
+
+  # -- Set Znuny's SysConfig secure mode.
+  secureMode: true
 
   # -- Set the application logging.
   logs:
@@ -59,7 +74,7 @@ config:
 
     # -- Set the host of the database.
     # @section -- Required
-    host: {}
+    host:
 
     # -- Set the port of the database.
     # @section -- Required
@@ -72,12 +87,12 @@ config:
     # -- Set the database username to connect to.
     # Ignored if an externalSecret is defined.
     # @section -- Required
-    username: {}
+    username:
 
     # -- Set the database password to connect to.
     # Ignored if an externalSecret is defined.
     # @section -- Required
-    password: {}
+    password:
 
     # -- Define the name of a Kubernetes secret to set the database credentials.
     # If externalSecret is defined, keys "username" and "password" will be ignored.
@@ -89,12 +104,12 @@ config:
   # -- Set Apache2 custom configurations.
   apache:
     # -- Set a local domain in Apache2 configurations.
-    domain: {}
+    domain: 
     # -- Set rewrite rules in Apache2 configurations.
     rewriteRules:
 
       # -- Set the rewrite rules to be included.
-      rules: {}
+      rules:
       # rules: |-
       #   RewriteRule ^/$ https://%{HTTP_HOST}/otrs/customer.pl
       #   RewriteRule ^/otrs/$ https://%{HTTP_HOST}/otrs/customer.pl
@@ -118,7 +133,7 @@ config:
 
       # -- Set the administrator's password.
       # Ignored if an externalSecret is defined.
-      password: {}
+      password:
 
       # -- Define the name of a Kubernetes secret to set the administrator credentials.
       # If externalSecret is defined, keys "username" and "password" will be ignored.
@@ -146,19 +161,19 @@ config:
       # -- Enable the SMTP connection.
       enabled: false
 
-      # -- Set the host of the SMTP server
-      host: {}
+      # -- Set the host of the SMTP server.
+      host: 
 
-      # -- Set the port of the SMTP server
-      port: {}
+      # -- Set the port of the SMTP server.
+      port: 25
 
       # -- Set the SMTP server username to connect to.
       # Ignored if an externalSecret is defined.
-      username: {}
+      username: 
 
       # -- Set the SMTP server password to connect to.
       # Ignored if an externalSecret is defined.
-      password: {}
+      password: 
 
       # -- Define the name of a Kubernetes secret to set the SMTP server credentials.
       # If externalSecret is defined, keys "username" and "password" will be ignored.
@@ -170,7 +185,7 @@ config:
   authentications:
 
     # -- Set the authentications backends configurations as following in a single block.
-    backends: {}
+    backends:
     # backends: |-
     #   $Self->{CustomerUser1} = {
     #       Name => 'LDAP Data Source',
@@ -199,23 +214,15 @@ config:
     # externalSecret:
     #   name: znuny-authentication-backends
 
-# -- Set the auto scaling of Znuny.
-autoscaling:
-
-  # -- Enable the Horizontal pod scaling
-  enabled: false
-
-  # -- Set the minimum of replicas.
-  minReplicas: 1
-
-  # -- Set the miximum of replicas.
-  maxReplicas: 3
-
-  # -- Set the percentage of cpu to trigger the scaling.
-  targetCPUUtilizationPercentage: 20
-
-  # -- Set the percentage of memory to trigger the scaling.
-  targetMemoryUtilizationPercentage: 50
+  # -- Set application extensions if enabled.
+  addons:
+    # -- Enable application extensions.
+    enabled: false
+    # -- Define packages with the format used by Znuny (e.g. 'MyRepository:Package').
+    packages: []
+    # packages:
+    #   - https://download.znuny.org/releases/packages:Survey
+    #   - https://addons.znuny.com/public:Znuny-HealthStatus
 
 # -- Set the Kubernetes services specifications.
 service:
@@ -233,7 +240,7 @@ ingress:
   enabled: false
 
   # -- Set the public domain on which Znuny will be exposed.
-  domain: {}
+  domain:
 
   # -- Set annotations to add to the ingress.
   annotations: {}
@@ -249,7 +256,7 @@ ingress:
 
 # -- Set persistant volumes.
 # The access mode depend to your CSI
-persistentVolumeClaims: {}
+persistentVolumeClaims: []
 # persistentVolumeClaims:
 #   - name: "data"
 #     size: "100Mi"
@@ -257,7 +264,7 @@ persistentVolumeClaims: {}
 #     accessModes:
 #       - ReadWriteOnce
 
-# -- Set Znuny's pod specifications
+# -- Set Znuny's pod specifications.
 pod:
   # -- Set the restart policy.
   restartPolicy: Always
@@ -298,6 +305,24 @@ pod:
 
       # -- Set Znuny's container memory requests.
       memory: 2048Mi
+
+  # -- Set the auto scaling of Znuny.
+  autoscaling:
+
+    # -- Enable the Horizontal pod scaling.
+    enabled: false
+
+    # -- Set the minimum of replicas.
+    minReplicas: 1
+
+    # -- Set the miximum of replicas.
+    maxReplicas: 3
+
+    # -- Set the percentage of cpu to trigger the scaling.
+    targetCPUUtilizationPercentage: 80
+
+    # -- Set the percentage of memory to trigger the scaling.
+    targetMemoryUtilizationPercentage: 75
 
   # -- Set Znuny's pod security contexts.
   securityContext: {}

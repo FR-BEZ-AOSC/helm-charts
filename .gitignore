@@ -2,3 +2,4 @@ dev-values.yaml
 *.test
 tests
 *.tgz
+charts/*/*/index.yaml

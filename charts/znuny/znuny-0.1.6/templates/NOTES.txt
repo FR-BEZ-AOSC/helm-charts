@@ -101,8 +101,6 @@ To run a Znuny's CLI command without persistent shell connection:
 
 > NOTE: Take care to not run deamonized process.
 
-
-
-***Znuny deployment successfully completed !***
+**Znuny deployment successfully completed !**
 
 
