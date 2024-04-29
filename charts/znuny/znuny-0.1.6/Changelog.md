@@ -18,5 +18,5 @@
 * Rework autoscaling
 * Add timezones
 * Add znunu's secure mode
-
+* Add Znuny's configuration overrides mechanism
 

@@ -58,6 +58,7 @@ spec:
             - name: {{ $ecmm.name }}
               mountPath: {{ $ecmm.mountPath }}
               subPath: {{ $ecmm.subpath }}
+              readOnly: false
             {{- end }}
           envFrom:
           - configMapRef:
