@@ -101,6 +101,16 @@ spec:
           - secretRef:
               name: {{ .Values.config.authentications.externalSecret.name }}
           {{- end }}
+          {{- if and (not .Values.config.api.healthstatus.externalSecret) .Values.config.api.healthstatus.apiKey }}
+          - secretRef:
+              name: {{ $rel.Name }}-api-credentials
+          {{- else if and .Values.config.api.healthstatus.externalSecret (not .Values.config.api.healthstatus.apiKey) }}
+          - secretRef:
+              name: {{ .Values.config.api.healthstatus.externalSecret.name }}
+          {{- else if and .Values.config.api.healthstatus.externalSecret .Values.config.api.healthstatus.apiKey }}
+          - secretRef:
+              name: {{ .Values.config.api.healthstatus.externalSecret.name }}
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /otrs/index.pl

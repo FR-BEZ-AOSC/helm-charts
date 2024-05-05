@@ -55,10 +55,45 @@ image:
 # -- Set Znuny's configurations.
 config:
 
+  # -- Set the connection of the PostgreSQL database.  
+  # @section -- Required configurations
+  database:
+
+    # -- Set the host of the database.  
+    # @section -- Required configurations
+    host:
+
+    # -- Set the port of the database.  
+    # @section -- Required configurations
+    port: 5432
+
+    # -- Set the name of the database.  
+    # @section -- Required configurations
+    name: znuny
+
+    # -- Set the database username to connect to.  
+    # Ignored if an externalSecret is defined.  
+    # @section -- Required configurations
+    username: 
+
+    # -- Set the database password to connect to.  
+    # Ignored if an externalSecret is defined.  
+    # @section -- Required configurations
+    password:
+
+    # -- Define the name of a Kubernetes secret to set the database credentials.  
+    # If externalSecret is defined, keys "username" and "password" will be ignored.  
+    # @section -- Required configurations
+    externalSecret: {}
+    # externalSecret:
+    #   name: znuny-database-credentials
+
   # -- Set the container timezone.  
+  # @section -- Znuny's configuration
   timezone: Etc/UTC
 
   # -- Set Znuny's SysConfig secure mode.  
+  # @section -- Znuny's configuration
   secureMode: true
 
   # -- Set the application logging.  
@@ -66,48 +101,20 @@ config:
 
     # -- Set a path to Znuny's file logging.  
     # The file logging is enabled only if the key "path" is set.  
+    # @section -- Znuny's configuration
     path: /var/log/znuny
-
-  # -- Set the connection of the PostgreSQL database.  
-  database:
-
-    # -- Set the host of the database.  
-    # @section -- Required
-    host:
-
-    # -- Set the port of the database.  
-    # @section -- Required
-    port: 5432
-
-    # -- Set the name of the database.  
-    # @section -- Required
-    name: znuny
-
-    # -- Set the database username to connect to.  
-    # Ignored if an externalSecret is defined.  
-    # @section -- Required
-    username:
-
-    # -- Set the database password to connect to.  
-    # Ignored if an externalSecret is defined.  
-    # @section -- Required
-    password:
-
-    # -- Define the name of a Kubernetes secret to set the database credentials.  
-    # If externalSecret is defined, keys "username" and "password" will be ignored.  
-    # @section -- Required
-    externalSecret: {}
-    # externalSecret:
-    #   name: znuny-database-credentials
 
   # -- Set Apache2 custom configurations.  
   apache:
     # -- Set a local domain in Apache2 configurations.  
+    # @section -- Znuny's configuration
     domain: 
     # -- Set rewrite rules in Apache2 configurations.  
+    # @section -- Znuny's configuration
     rewriteRules:
 
       # -- Set the rewrite rules to be included.  
+      # @section -- Znuny's configuration
       rules:
       # rules: |-
       #   RewriteRule ^/$ https://%{HTTP_HOST}/otrs/customer.pl
@@ -116,7 +123,10 @@ config:
 
       # -- Define the name of a Kubernetes configMap to set the Apache2 rewrite rules.  
       # If externalConfigMap is defined, the key "rules" will be ignored.  
+      # @section -- Znuny's configuration
       externalConfigMap: {}
+      # -- config.apache.rewriteRules.externalConfigMap.name -- Ste the name of the external secret.
+      # @section -- Znuny's configuration
       # externalConfigMap:
       #   name: znuny-apache-rewrite-rules
 
@@ -124,18 +134,22 @@ config:
   users:
 
     # -- Setting of the administrator user.  
+    # @section -- Znuny's configuration
     admin:
 
       # -- Set the administrator's username.  
       # Ignored if an externalSecret is defined.  
+      # @section -- Znuny's configuration
       username: root@localhost
 
       # -- Set the administrator's password.  
       # Ignored if an externalSecret is defined.  
+      # @section -- Znuny's configuration
       password:
 
       # -- Define the name of a Kubernetes secret to set the administrator credentials.  
       # If externalSecret is defined, keys "username" and "password" will be ignored.  
+      # @section -- Znuny's configuration
       externalSecret: {}
       # externalSecret:
       #   name: znuny-users-admin-credentials
@@ -152,30 +166,37 @@ config:
     sendmail:
 
       # -- Enable the Sendmail module.  
+      # @section -- Znuny's configuration
       enabled: true
 
     # -- Setting of the SMTP connection.  
     smtp:
 
       # -- Enable the SMTP connection.  
+      # @section -- Znuny's configuration
       enabled: false
 
       # -- Set the host of the SMTP server.  
+      # @section -- Znuny's configuration
       host: 
 
       # -- Set the port of the SMTP server.  
+      # @section -- Znuny's configuration
       port: 25
 
       # -- Set the SMTP server username to connect to.  
       # Ignored if an externalSecret is defined.  
+      # @section -- Znuny's configuration
       username: 
 
       # -- Set the SMTP server password to connect to.  
       # Ignored if an externalSecret is defined.  
+      # @section -- Znuny's configuration
       password: 
 
       # -- Define the name of a Kubernetes secret to set the SMTP server credentials.  
       # If externalSecret is defined, keys "username" and "password" will be ignored.  
+      # @section -- Znuny's configuration
       externalSecret: {}
       # externalSecret:
       #   name: znuny-smtp-credentials
@@ -184,6 +205,7 @@ config:
   authentications:
 
     # -- Set the authentications backends configurations as following in a single block.  
+      # @section -- Znuny's configuration
     backends:
     # backends: |-
     #   $Self->{CustomerUser1} = {
@@ -208,16 +230,40 @@ config:
     # (...)
 
     # -- Define the name of a Kubernetes secret to set the application authentication backends.  
-    # If externalSecret is defined, the key "backends" will be ignored.  
+    # If "externalSecret" is defined, the key "backends" will be ignored.  
+      # @section -- Znuny's configuration
     externalSecret: {}
     # externalSecret:
     #   name: znuny-authentication-backends
 
+  # -- Set Znuny's API.  
+  api:
+
+    # -- Set the healthstatus API.  
+    # The package healthstatus must be installed.  
+    healthstatus:
+
+      # -- Set an API key to add at the global configuration.  
+      # Ignored if "externalSecret" is defined.  
+      # @section -- Znuny's configuration
+      apiKey: 
+
+      # -- Define the name of a Kubernetes secret to set an API key to add at the global configuration.  
+      # If "externalSecret" is defined, "apiKey" will be ignored.
+      # @section -- Znuny's configuration
+      externalSecret: {}
+      # externalSecret:
+      #   name: znuny-api-credentials
+
   # -- Set application extensions if enabled.  
   addons:
+
     # -- Enable application extensions.  
+    # @section -- Znuny's configuration
     enabled: false
+
     # -- Define packages with the format used by Znuny (e.g. 'MyRepository:Package').  
+    # @section -- Znuny's configuration
     packages: []
     # packages:
     #   - https://download.znuny.org/releases/packages:Survey
@@ -227,8 +273,8 @@ config:
   # (e.g /overrides/Kernel/Language/en.pm becomes /opt/otrs/Custom/Kernel/Language/en.pm).  
   # The directory path must end with '/''.
   # Once the container has been initialized, all the configurations contained in this directory will be copied to the /opt/otrs/Custom directory.  
-  configurationOverridesDirectory:
-
+  # @section -- Znuny's configuration
+  configurationOverridesDirectory: /overrides/
 
 # -- Set the Kubernetes services specifications.  
 service:
