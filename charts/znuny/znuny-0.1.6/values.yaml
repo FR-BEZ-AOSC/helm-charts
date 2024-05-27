@@ -291,14 +291,14 @@ ingress:
   # -- Enable the ingress features.  
   enabled: false
 
-  # -- Set the public domain on which Znuny will be exposed.  
-  domain:
-
   # -- Set annotations to add to the ingress.  
   annotations: {}
   # annotations:
   #   kubernetes.io/ingress.class: nginx
   #   cert-manager.io/cluster-issuer: <issuer>
+
+  # -- Set public domains to expose to.  
+  domains: []
 
   # -- Set TLS configurations.  
   tls:
