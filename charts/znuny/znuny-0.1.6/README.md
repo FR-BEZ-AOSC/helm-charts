@@ -40,6 +40,7 @@ A Helm chart to deploy Znuny on Kubernetes
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| config.database | object | `{"externalSecret":{},"host":null,"name":"znuny","password":null,"port":5432,"username":null}` | Set the connection of the PostgreSQL database.   |
 | config.database.externalSecret | object | `{}` | Define the name of a Kubernetes secret to set the database credentials.   If externalSecret is defined, keys "username" and "password" will be ignored.   |
 | config.database.host | string | `nil` | Set the host of the database.   |
 | config.database.name | string | `"znuny"` | Set the name of the database.   |
@@ -64,7 +65,6 @@ A Helm chart to deploy Znuny on Kubernetes
 | config.api | object | `{"healthstatus":{"apiKey":null,"externalSecret":{}}}` | Set Znuny's API.   |
 | config.api.healthstatus | object | `{"apiKey":null,"externalSecret":{}}` | Set the healthstatus API.   The package healthstatus must be installed.   |
 | config.authentications | object | `{"backends":null,"externalSecret":{}}` | Set the application authentication backends.   |
-| config.database | object | `{"externalSecret":{},"host":null,"name":"znuny","password":null,"port":5432,"username":null}` | Set the connection of the PostgreSQL database.   |
 | config.logs | object | `{"path":"/var/log/znuny"}` | Set the application logging.   |
 | config.mails | object | `{"sendmail":{"enabled":true},"smtp":{"enabled":false,"externalSecret":{},"host":null,"password":null,"port":25,"username":null}}` | Set the application e-mail notifications system.   There are two mailing type :     - sendmail: Send mail with the local sendmail module.     - smtp: Connect to an external SMTP server to send mails.   Both features can't be activated simultaneously.   The feature "sendmail" will be prioritized over "smtp" as long as its "enabled" key is set to true.   |
 | config.mails.sendmail | object | `{"enabled":true}` | Setting of the local Sendmail module.   |
@@ -76,9 +76,9 @@ A Helm chart to deploy Znuny on Kubernetes
 | image.pullSecrets | list | `[]` | Set a registry pull secret if a custom image hosted on a private registry is used.   Use it only if a pullSecret has to be created. Otherwise, use the externalPullSecrets key.   Both keys can be used simultaneously and the secret must be encoded in base64.   |
 | image.repository | string | `"ghcr.io/fr-bez-aosc/znuny"` | Set the container image to use.   |
 | image.tag | string | `"6.5.8-0"` | Set the image tag to use.   |
-| ingress | object | `{"annotations":{},"domain":null,"enabled":false,"tls":{"enabled":false}}` | Set the Kubernetes ingress specifications.   |
+| ingress | object | `{"annotations":{},"domains":[],"enabled":false,"tls":{"enabled":false}}` | Set the Kubernetes ingress specifications.   |
 | ingress.annotations | object | `{}` | Set annotations to add to the ingress.   |
-| ingress.domain | string | `nil` | Set the public domain on which Znuny will be exposed.   |
+| ingress.domains | list | `[]` | Set public domains to expose to.   |
 | ingress.enabled | bool | `false` | Enable the ingress features.   |
 | ingress.tls | object | `{"enabled":false}` | Set TLS configurations.   |
 | ingress.tls.enabled | bool | `false` | Enable TLS support.   |
