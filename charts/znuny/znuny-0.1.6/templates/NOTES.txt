@@ -70,14 +70,21 @@ If needed, Znuny's web UI can be reached by port forwarding:
 
 ## Ingress
 
-Znuny is exposed via an ingress on the domain "{{ .Values.ingress.domain }}".
+Znuny is exposed via an ingress on the domains :
+    {{ range $domain := .Values.ingress.domains }}
+    * "{{ $domain }}"
+    {{- end }}
+
 It can be accessed from a web browser at :
     {{- if .Values.ingress.tls.enabled }}
-
-    https://{{ .Values.ingress.domain }} - HTTPS connection
+    {{ range $domain := .Values.ingress.domains }}
+    https://{{ $domain }} - HTTPS connection
+    {{- end }}
     {{- else }}
 
-    http://{{ .Values.ingress.domain }} - HTTP connection
+    {{- range $domain := .Values.ingress.domains }}
+    http://{{ .domain }} - HTTP connection
+    {{- end }}
     {{- end }}
 {{- end }}
 

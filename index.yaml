@@ -3,9 +3,9 @@ entries:
   znuny:
   - apiVersion: v2
     appVersion: 6.5.8
-    created: "2024-06-13T14:53:42.688937123+02:00"
+    created: "2024-06-13T15:57:55.786578835+02:00"
     description: A Helm chart to deploy Znuny on Kubernetes
-    digest: 1a4f52a2dce1d67b4a01ac061df96988d54c2d3e15762e06037b11f2ac24548a
+    digest: d5f04bb8b464000cfef658ebdca0dbcad564855db5e18c478b208f7b9ccc3e11
     icon: https://avatars.githubusercontent.com/u/1922266?s=200&v=4
     name: znuny
     type: application
